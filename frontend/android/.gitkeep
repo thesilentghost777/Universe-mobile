@@ -1,0 +1,3 @@
+# Placeholder — génère les plateformes Android/iOS avec :
+#   flutter create . --project-name universe_frontend --org cm.universe
+# (nécessite le Flutter SDK installé)
