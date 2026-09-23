@@ -1,0 +1,71 @@
+UniVerse iOS - configuration Codemagic
+======================================
+
+Bundle ID iOS
+------------
+com.universe.app237
+
+Le bundle ID Android reste cm.universe.universe_frontend.
+
+Prerequis App Store Connect
+---------------------------
+1. Ouvrir App Store Connect avec le compte Apple Developer de l'equipe.
+2. Dans Users and Access > Integrations > App Store Connect API, creer une cle API.
+3. Donner a cette cle le role App Manager (ou Admin si la politique de l'equipe l'exige).
+4. Conserver le fichier .p8, le Key ID et l'Issuer ID. Le fichier .p8 ne doit pas etre committe.
+5. Dans My Apps, creer l'app iOS avec le Bundle ID exact com.universe.app237.
+6. Dans Certificates, Identifiers & Profiles > Identifiers, verifier que cet App ID existe.
+
+Configuration Codemagic
+-----------------------
+1. Connecter le depot dans Codemagic et ouvrir l'application Flutter.
+2. Aller dans Teams > Integrations > Developer Portal > App Store Connect.
+3. Ajouter la cle API avec Issuer ID, Key ID et le fichier .p8.
+4. Ouvrir le workflow iOS et choisir cette integration App Store Connect.
+5. Dans iOS code signing, choisir Automatic signing.
+6. Selectionner le Bundle ID com.universe.app237 et laisser Codemagic creer ou recuperer :
+   - le certificat iOS Distribution;
+   - le provisioning profile App Store pour la distribution.
+7. Pour un build debug sur appareil, utiliser un certificat iOS Development et un profil
+   de developpement; pour TestFlight/App Store, utiliser iOS Distribution et App Store.
+8. Definir le workflow de publication vers TestFlight avec l'integration App Store Connect.
+
+Reglages recommandes du workflow
+--------------------------------
+Platform: iOS
+Build mode: Release pour TestFlight/App Store
+Xcode version: une version disponible et compatible avec Flutter
+Flutter version: celle definie par le projet
+Signing: Automatic
+Bundle ID: com.universe.app237
+
+Commande locale de controle
+---------------------------
+flutter clean
+flutter pub get
+flutter build ipa --release
+
+Diagnostic de l'erreur "No valid code signing certificates were found"
+------------------------------------------------------------------------
+Cette erreur indique que le build est en signature manuelle, mais qu'aucun certificat
+et aucun provisioning profile utilisable n'est installe ou associe au Bundle ID.
+Dans Codemagic, ne pas laisser le champ Team Id vide et ne pas utiliser Signing Style:
+manual sans importer les certificats et profils correspondants. Avec une integration
+App Store Connect valide, choisir Automatic signing puis relancer le build.
+
+Si la signature manuelle est obligatoire
+----------------------------------------
+1. Creer un certificat iOS Distribution dans Apple Developer.
+2. Creer un provisioning profile App Store pour com.universe.app237.
+3. Importer le certificat (.p12) et son mot de passe dans Codemagic.
+4. Importer le provisioning profile (.mobileprovision).
+5. Associer exactement ces deux elements au workflow iOS.
+6. Verifier que Team ID, Bundle ID et type de profil correspondent.
+
+Verification avant publication
+-----------------------------
+- Le Bundle ID dans Xcode est com.universe.app237 pour Runner.
+- L'app creee dans App Store Connect utilise le meme Bundle ID.
+- Le certificat et le provisioning profile appartiennent a la meme Team ID.
+- Le numero de build est incremente a chaque nouvel envoi TestFlight.
+- Le premier build est archive puis publie via Codemagic, pas avec un profil debug.
