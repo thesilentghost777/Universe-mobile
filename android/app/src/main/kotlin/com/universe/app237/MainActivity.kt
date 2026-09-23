@@ -1,4 +1,4 @@
-package cm.universe.universe_frontend
+package com.universe.app237
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <network-security-config>
-    <!-- HTTP local (backend NestJS) : obligatoire en release, Android 9+ le
-         bloque sinon. HTTPS production n'est pas impacté. -->
+    <!-- Seulement pour les serveurs HTTP de développement. -->
     <base-config cleartextTrafficPermitted="true">
         <trust-anchors>
             <certificates src="system" />
